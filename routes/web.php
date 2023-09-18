@@ -67,3 +67,6 @@ Route::get('/login', [UserController::class, 'login'])->name('login')
 //log in user
 Route::post('/users/authenticate', [UserController::class, 'authenticate']);
 
+//show user form
+Route::get('/users/manage', [UserController::class, 'manage'])
+->middleware(('auth'));

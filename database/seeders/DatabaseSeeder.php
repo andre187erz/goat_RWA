@@ -18,8 +18,11 @@ class DatabaseSeeder extends Seeder
        //\App\Models\User::factory(5)->create();
 
        $user=User::factory()->create([
-        'name'=>'John Doe',
-        'email'=> 'john@gmail.com'
+        'name'=>'Admin',
+        'email'=> 'admin@gmail.com',
+        'password'=>'111111',
+        //dodano:
+        'role'=>'admin'
         ]);
 
         Listing::factory(6)->create([

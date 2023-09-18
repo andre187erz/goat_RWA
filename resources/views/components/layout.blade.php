@@ -39,12 +39,18 @@
                         Dobrodošli {{auth()->user()->name}}
                     </span>
                 </li>
+                @if(auth()->user()->role == "admin")
+                 <li>
+                    <a href="/users/manage" class="hover:text-laravel"
+                    ><i class="fa-solid fa-gear"></i> Upravljaj Korisnicima</a>
+                 </li>
+                @endif                           
                 <li>
                     <a href="/listings/manage" class="hover:text-laravel"
                         ><i class="fa-solid fa-gear"></i>
                         Upravljaj Oglasima</a
                     >
-                </li>  
+                </li> 
                 <li>
                     <form class="inline" method="POST" action="/logout">
                     @csrf
