@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -29,14 +30,15 @@ class UserController extends Controller
             //'role'=>$request->role      
         ]);
         $user->save();
-        return response()->json(['message'=>'Successfully Created user'],201);
+        //return response()->json(['message'=>'Successfully Created user'],201);
+        //return view('users.login');
   
 
         //hash password
-        $formFields['password']=bcrypt($formFields['password']);
+        //$formFields['password']=bcrypt($formFields['password']);
 
         //create user
-        $user=User::create($formFields);
+        //$user=User::create($formFields);
 
         //login
         auth()->login($user);
@@ -78,7 +80,10 @@ class UserController extends Controller
       
     //manage users
     public function manage() {
-        return view('users.manage');
+        return view('users.manage', [
+            // 'users' => User::all()
+            'users' => User::where('id','!=', Auth::id())->get()
+        ]);
     }
 
     // Show all users
@@ -101,9 +106,12 @@ class UserController extends Controller
         return view('users.edit', ['user'=>$user]);
     }
 
+
+    
+
     //delete user
     public function destroy(User $user) {
-        if($user->user_id != auth()->id()) {
+        if(!Auth::check()) {
             abort(403, 'Unauthorized Action');
         }
         
@@ -113,9 +121,19 @@ class UserController extends Controller
 
     //update User Data
     public function update(Request $request, User $user) {
-        //make sure logged in user is owner
-        if($user->user_id != auth()->id()) {
+        // Make sure logged-in user is the owner
+        if(!Auth::check()) {
             abort(403, 'Unauthorized Action');
         }
-}
+    
+        $formFields = $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'password' => 'required'
+        ]);
+    
+        $user->update($formFields);
+    
+        return back()->with('message', 'Korisnik uspješno ažuriran!');
+    }
 }
